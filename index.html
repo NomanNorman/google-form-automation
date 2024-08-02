@@ -3,29 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Form Automation</title>
+    <title>Your Website Title</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        function start() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: '312095007922.apps.googleusercontent.com',
+                    scope: 'profile email'
+                }).then(function(auth2) {
+                    attachSignin(document.getElementById('signin-button'));
+                });
+            });
+        }
+
+        function attachSignin(element) {
+            gapi.auth2.getAuthInstance().attachClickHandler(element, {},
+                function(googleUser) {
+                    // Handle successful sign-in
+                    console.log('Signed in as: ' + googleUser.getBasicProfile().getName());
+                    // Redirect or load form
+                    window.location.href = 'https://NomanNorman.github.io/form';
+                }, function(error) {
+                    console.log(JSON.stringify(error, undefined, 2));
+                });
+        }
+
+        // Call start() when the page loads
+        window.onload = function() {
+            start();
+        };
+    </script>
 </head>
 <body>
-    <h1>Google Form Automation</h1>
-    <label for="form-url">Google Form URL:</label>
-    <input type="text" id="form-url" placeholder="Enter Google Form URL" required>
-    <button id="start-automation-btn">Start Automation</button>
-    <script>
-        document.getElementById('start-automation-btn').addEventListener('click', () => {
-            const formUrl = document.getElementById('form-url').value;
-            fetch('/start-automation', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ formUrl }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Automation started:', data);
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <h1>Welcome to Your Website</h1>
+    <p>Please sign in to access the Google Form.</p>
+    <button id="signin-button">Sign in with Google</button>
 </body>
 </html>
