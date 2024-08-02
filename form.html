@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Form Automation</title>
+    <script>
+        async function fetchAnswersFromGemini(formLink) {
+            // Fetch answers from Gemini API
+            const response = await fetch('YOUR_GEMINI_API_ENDPOINT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer YOUR_API_KEY`
+                },
+                body: JSON.stringify({ formLink: formLink })
+            });
+            const answers = await response.json();
+            return answers;
+        }
+
+        function cleanText(text) {
+            return text
+                .replace(/^\d+\.\s*|\s*\d+\s*|\s*[\d]+\.\s*/g, '') // Remove serial numbers
+                .replace(/[\*\(\)]/g, '') // Remove asterisks and parentheses
+                .trim(); // Trim leading and trailing whitespace
+        }
+
+        async function fillAnswers(formLink) {
+            const answers = await fetchAnswersFromGemini(formLink);
+            console.log('Fetched answers:', answers);
+
+            // Fill answers in the form
+            answers.forEach(answer => {
+                const questionElement = document.querySelector(`div[data-question-id="${answer.questionId}"]`);
+                const optionElement = questionElement.querySelector(`input[value="${answer.optionValue}"]`);
+                if (optionElement) {
+                    optionElement.click();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const formLink = urlParams.get('formLink');
+            if (formLink) {
+                // Redirect to the form URL
+                window.location.href = formLink;
+
+                // Wait for form to load and fill answers
+                window.addEventListener('load', async () => {
+                    await fillAnswers(formLink);
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Google Form Automation</h1>
+</body>
+</html>
