@@ -11,7 +11,7 @@
             gapi.load('auth2', function() {
                 console.log('Initializing auth2...');
                 gapi.auth2.init({
-                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com' // Replace with your client ID
+                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com'
                 }).then(function () {
                     console.log('auth2 initialized successfully');
                 }).catch(function (error) {
@@ -36,7 +36,9 @@
             const formLink = document.getElementById('form-link').value;
             console.log('Form link submitted:', formLink);
             // Redirect to your GitHub Pages website with the form link as a parameter
-            window.location.href = `https://nomannorman.github.io?formLink=${encodeURIComponent(formLink)}`;
+            const redirectUrl = `https://nomannorman.github.io/google-form-automation/?formLink=${encodeURIComponent(formLink)}`;
+            console.log('Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
         }
     </script>
     <style>
