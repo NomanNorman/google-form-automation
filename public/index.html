@@ -6,38 +6,54 @@
     <title>Your Website Title</title>
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        function start() {
+        function onLoad() {
+            console.log('Loading auth2 library...');
             gapi.load('auth2', function() {
+                console.log('Initializing auth2...');
                 gapi.auth2.init({
-                    client_id: '312095007922.apps.googleusercontent.com',
-                    scope: 'profile email'
-                }).then(function(auth2) {
-                    attachSignin(document.getElementById('signin-button'));
+                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com' // Replace with your client ID
+                }).then(function () {
+                    console.log('auth2 initialized successfully');
+                }).catch(function (error) {
+                    console.error('Error initializing auth2:', error);
                 });
             });
         }
 
-        function attachSignin(element) {
-            gapi.auth2.getAuthInstance().attachClickHandler(element, {},
-                function(googleUser) {
-                    // Handle successful sign-in
-                    console.log('Signed in as: ' + googleUser.getBasicProfile().getName());
-                    // Redirect or load form
-                    window.location.href = 'https://NomanNorman.github.io/form';
-                }, function(error) {
-                    console.log(JSON.stringify(error, undefined, 2));
-                });
+        function handleSignInClick() {
+            console.log('Sign in button clicked');
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn().then(function(user) {
+                console.log('User signed in:', user);
+                document.getElementById('form-section').style.display = 'block';
+            }).catch(function(error) {
+                console.error('Error signing in:', error);
+            });
         }
 
-        // Call start() when the page loads
-        window.onload = function() {
-            start();
-        };
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const formLink = document.getElementById('form-link').value;
+            console.log('Form link submitted:', formLink);
+            // Redirect to your GitHub Pages website with the form link as a parameter
+            window.location.href = `https://nomannorman.github.io?formLink=${encodeURIComponent(formLink)}`;
+        }
     </script>
+    <style>
+        #form-section {
+            display: none;
+        }
+    </style>
 </head>
-<body>
+<body onload="onLoad()">
     <h1>Welcome to Your Website</h1>
-    <p>Please sign in to access the Google Form.</p>
-    <button id="signin-button">Sign in with Google</button>
+    <button id="sign-in-button" onclick="handleSignInClick()">Sign in with Google</button>
+    <div id="form-section">
+        <h2>Paste Google Form Link</h2>
+        <form onsubmit="handleFormSubmit(event)">
+            <input type="text" id="form-link" placeholder="Enter Google Form link" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
