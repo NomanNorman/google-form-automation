@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Form Automation</title>
+</head>
+<body>
+    <h1>Google Form Automation</h1>
+    <label for="form-url">Google Form URL:</label>
+    <input type="text" id="form-url" placeholder="Enter Google Form URL" required>
+    <button id="start-automation-btn">Start Automation</button>
+    <script>
+        document.getElementById('start-automation-btn').addEventListener('click', () => {
+            const formUrl = document.getElementById('form-url').value;
+            fetch('/start-automation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formUrl }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Automation started:', data);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
