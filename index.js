@@ -1,5 +1,6 @@
+// Load the Google Identity Services API
 function handleClientLoad() {
-    const googleClientId = '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com'; // Replace with your actual client ID
+    const googleClientId = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
 
     window.google.accounts.id.initialize({
         client_id: googleClientId,
@@ -13,8 +14,8 @@ function handleClientLoad() {
     );
 }
 
+// This function handles the response from the Google Sign-In
 function handleCredentialResponse(response) {
-    // The response will contain the ID token
     console.log("Encoded JWT ID token: " + response.credential);
     
     const formUrl = document.getElementById('form-url').value; // Get the form URL input
@@ -25,4 +26,5 @@ function handleCredentialResponse(response) {
     }
 }
 
-handleClientLoad();
+// Call the handleClientLoad function when the page loads
+window.onload = handleClientLoad;
