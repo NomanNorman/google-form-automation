@@ -20,7 +20,8 @@ function handleCredentialResponse(response) {
     
     const formUrl = document.getElementById('form-url').value; // Get the form URL input
     if (formUrl) {
-        window.location.href = `form.html?formLink=${encodeURIComponent(formUrl)}`; // Redirect to the form page
+        // Redirect to the form page with the URL passed as a query parameter
+        window.location.href = `form.html?formLink=${encodeURIComponent(formUrl)}`; 
     } else {
         alert('Please enter a valid Google Form URL.');
     }
