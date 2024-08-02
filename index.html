@@ -7,27 +7,53 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
         function onLoad() {
+            console.log('Loading auth2 library...');
             gapi.load('auth2', function() {
+                console.log('Initializing auth2...');
                 gapi.auth2.init({
                     client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com' // Replace with your client ID
+                }).then(function () {
+                    console.log('auth2 initialized successfully');
+                }).catch(function (error) {
+                    console.error('Error initializing auth2:', error);
                 });
             });
         }
 
         function handleSignInClick() {
+            console.log('Sign in button clicked');
             const auth2 = gapi.auth2.getAuthInstance();
             auth2.signIn().then(function(user) {
                 console.log('User signed in:', user);
-                // You can redirect to the Google Form or perform additional actions here
-                // Example: window.location.href = 'YOUR_GOOGLE_FORM_URL';
+                document.getElementById('form-section').style.display = 'block';
             }).catch(function(error) {
                 console.error('Error signing in:', error);
             });
         }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const formLink = document.getElementById('form-link').value;
+            console.log('Form link submitted:', formLink);
+            // Redirect to your GitHub Pages website with the form link as a parameter
+            window.location.href = `https://yourusername.github.io?formLink=${encodeURIComponent(formLink)}`;
+        }
     </script>
+    <style>
+        #form-section {
+            display: none;
+        }
+    </style>
 </head>
 <body onload="onLoad()">
     <h1>Welcome to Your Website</h1>
     <button id="sign-in-button" onclick="handleSignInClick()">Sign in with Google</button>
+    <div id="form-section">
+        <h2>Paste Google Form Link</h2>
+        <form onsubmit="handleFormSubmit(event)">
+            <input type="text" id="form-link" placeholder="Enter Google Form link" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
