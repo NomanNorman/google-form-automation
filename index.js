@@ -1,6 +1,6 @@
 // Load the Google Identity Services API
 function handleClientLoad() {
-    const googleClientId = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
+    const googleClientId = '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com'; // Replace with your actual client ID
 
     window.google.accounts.id.initialize({
         client_id: googleClientId,
