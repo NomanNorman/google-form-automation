@@ -45,17 +45,16 @@
         function handleSignInClick() {
             tokenClient.callback = (resp) => {
                 if (resp.error !== undefined) {
-                    throw (resp);
+                    console.log('Error signing in:', resp.error);
+                    return;
                 }
+                console.log('Sign-in successful');
                 document.getElementById('form-section').style.display = 'block';
             };
 
             if (gapi.client.getToken() === null) {
-                // Prompt the user to select a Google Account and ask for consent to share their data
-                // when establishing a new session.
                 tokenClient.requestAccessToken({prompt: 'consent'});
             } else {
-                // Skip display of account chooser and consent dialog for an existing session.
                 tokenClient.requestAccessToken({prompt: ''});
             }
         }
@@ -78,3 +77,14 @@
 <body onload="gapiLoaded(); gisLoaded();">
     <h1>Welcome to Your Website</h1>
     <button id="sign-in-button" onclick="handleSignInClick()" style="display:none">Sign in with Google</button>
+    <div id="form-section">
+        <form onsubmit="handleFormSubmit(event)">
+            <label for="form-link">Google Form Link:</label>
+            <input type="url" id="form-link" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+</body>
+</html>
