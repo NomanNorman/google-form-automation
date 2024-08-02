@@ -6,38 +6,28 @@
     <title>Your Website Title</title>
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        function start() {
+        function onLoad() {
             gapi.load('auth2', function() {
                 gapi.auth2.init({
-                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com',
-                    scope: 'profile email'
-                }).then(function(auth2) {
-                    attachSignin(document.getElementById('signin-button'));
+                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com' // Replace with your client ID
                 });
             });
         }
 
-        function attachSignin(element) {
-            gapi.auth2.getAuthInstance().attachClickHandler(element, {},
-                function(googleUser) {
-                    // Handle successful sign-in
-                    console.log('Signed in as: ' + googleUser.getBasicProfile().getName());
-                    // Redirect or load form
-                    window.location.href = 'https://NomanNorman.github.io/form';
-                }, function(error) {
-                    console.log(JSON.stringify(error, undefined, 2));
-                });
+        function handleSignInClick() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn().then(function(user) {
+                console.log('User signed in:', user);
+                // You can redirect to the Google Form or perform additional actions here
+                // Example: window.location.href = 'YOUR_GOOGLE_FORM_URL';
+            }).catch(function(error) {
+                console.error('Error signing in:', error);
+            });
         }
-
-        // Call start() when the page loads
-        window.onload = function() {
-            start();
-        };
     </script>
 </head>
-<body>
+<body onload="onLoad()">
     <h1>Welcome to Your Website</h1>
-    <p>Please sign in to access the Google Form.</p>
-    <button id="signin-button">Sign in with Google</button>
+    <button id="sign-in-button" onclick="handleSignInClick()">Sign in with Google</button>
 </body>
 </html>
