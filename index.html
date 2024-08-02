@@ -9,7 +9,7 @@
         function start() {
             gapi.load('auth2', function() {
                 gapi.auth2.init({
-                    client_id: '312095007922.apps.googleusercontent.com',
+                    client_id: '312095007922',
                     scope: 'profile email'
                 }).then(function(auth2) {
                     attachSignin(document.getElementById('signin-button'));
