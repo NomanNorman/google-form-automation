@@ -53,9 +53,9 @@
             };
 
             if (gapi.client.getToken() === null) {
-                tokenClient.requestAccessToken({prompt: 'consent'});
+                tokenClient.requestAccessToken({ prompt: 'consent' });
             } else {
-                tokenClient.requestAccessToken({prompt: ''});
+                tokenClient.requestAccessToken({ prompt: '' });
             }
         }
 
@@ -63,10 +63,14 @@
             event.preventDefault();
             const formLink = document.getElementById('form-link').value;
             console.log('Form link submitted:', formLink);
-            const redirectUrl = `https://nomannorman.github.io/google-form-automation/?formLink=${encodeURIComponent(formLink)}`;
-            console.log('Redirecting to:', redirectUrl);
-            window.location.href = redirectUrl;
+            // Redirect to Google Form and pass the link as a query parameter
+            window.location.href = `form.html?formLink=${encodeURIComponent(formLink)}`;
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            gapiLoaded();
+            gisLoaded();
+        });
     </script>
     <style>
         #form-section {
@@ -74,7 +78,7 @@
         }
     </style>
 </head>
-<body onload="gapiLoaded(); gisLoaded();">
+<body>
     <h1>Welcome to Your Website</h1>
     <button id="sign-in-button" onclick="handleSignInClick()" style="display:none">Sign in with Google</button>
     <div id="form-section">
