@@ -4,42 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website Title</title>
-    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        function onLoad() {
-            console.log('Loading auth2 library...');
-            gapi.load('auth2', function() {
-                console.log('Initializing auth2...');
-                gapi.auth2.init({
-                    client_id: '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com'
-                }).then(function () {
-                    console.log('auth2 initialized successfully');
-                }).catch(function (error) {
-                    console.error('Error initializing auth2:', error);
-                });
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+
+        const CLIENT_ID = '312095007922-uhdvlip6mti77t66s3sv1748fifrmu3g.apps.googleusercontent.com';
+        const SCOPES = 'https://www.googleapis.com/auth/userinfo.email';
+
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                apiKey: 'YOUR_API_KEY',
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
             });
+            gapiInited = true;
+            maybeEnableButtons();
+        }
+
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                document.getElementById('sign-in-button').style.display = 'block';
+            }
         }
 
         function handleSignInClick() {
-            console.log('Sign in button clicked');
-            const auth2 = gapi.auth2.getAuthInstance();
-            auth2.signIn().then(function(user) {
-                console.log('User signed in:', user);
+            tokenClient.callback = (resp) => {
+                if (resp.error !== undefined) {
+                    console.log('Error signing in:', resp.error);
+                    return;
+                }
+                console.log('Sign-in successful');
                 document.getElementById('form-section').style.display = 'block';
-            }).catch(function(error) {
-                console.error('Error signing in:', error);
-            });
+            };
+
+            if (gapi.client.getToken() === null) {
+                tokenClient.requestAccessToken({ prompt: 'consent' });
+            } else {
+                tokenClient.requestAccessToken({ prompt: '' });
+            }
         }
 
         function handleFormSubmit(event) {
             event.preventDefault();
             const formLink = document.getElementById('form-link').value;
             console.log('Form link submitted:', formLink);
-            // Redirect to your GitHub Pages website with the form link as a parameter
-            const redirectUrl = `https://nomannorman.github.io/google-form-automation/?formLink=${encodeURIComponent(formLink)}`;
-            console.log('Redirecting to:', redirectUrl);
-            window.location.href = redirectUrl;
+            // Redirect to Google Form and pass the link as a query parameter
+            window.location.href = `form.html?formLink=${encodeURIComponent(formLink)}`;
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            gapiLoaded();
+            gisLoaded();
+        });
     </script>
     <style>
         #form-section {
@@ -47,15 +78,17 @@
         }
     </style>
 </head>
-<body onload="onLoad()">
+<body>
     <h1>Welcome to Your Website</h1>
-    <button id="sign-in-button" onclick="handleSignInClick()">Sign in with Google</button>
+    <button id="sign-in-button" onclick="handleSignInClick()" style="display:none">Sign in with Google</button>
     <div id="form-section">
-        <h2>Paste Google Form Link</h2>
         <form onsubmit="handleFormSubmit(event)">
-            <input type="text" id="form-link" placeholder="Enter Google Form link" required>
+            <label for="form-link">Google Form Link:</label>
+            <input type="url" id="form-link" required>
             <button type="submit">Submit</button>
         </form>
     </div>
+    <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
